@@ -4,6 +4,11 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
+    private Rigidbody2D rb;
+
+    public float maxSpeed;
+    public float acceleration = 20f;
+    private FacingDirection currentFacing = FacingDirection.right;
     public enum FacingDirection
     {
         left, right
@@ -12,7 +17,9 @@ public class PlayerController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+        rb = GetComponent<Rigidbody2D>();
+
+
     }
 
     // Update is called once per frame
@@ -22,10 +29,27 @@ public class PlayerController : MonoBehaviour
         //manage the actual movement of the character.
         Vector2 playerInput = new Vector2();
         MovementUpdate(playerInput);
+
+
+
     }
 
     private void MovementUpdate(Vector2 playerInput)
     {
+        if (rb != null) {return;}
+
+        Vector2 targetVelocity = new Vector2(playerInput.x * maxSpeed, rb.linearVelocity.y);
+
+        rb.linearVelocity = Vector2.MoveTowards(rb.linearVelocity,targetVelocity,acceleration * Time.fixedDeltaTime);
+        if (playerInput.x > 0.1f)
+        {
+            currentFacing = FacingDirection.right;
+        }
+        else if (playerInput.x < -0.1f)
+        {
+            currentFacing = FacingDirection.left;
+        }
+
 
     }
 
