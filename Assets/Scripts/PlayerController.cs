@@ -9,6 +9,11 @@ public class PlayerController : MonoBehaviour
     public float maxSpeed;
     public float acceleration = 20f;
     private FacingDirection currentFacing = FacingDirection.right;
+
+    public float rayHeigh;
+    public LayerMask groundLayer;
+    public Color rayColor;
+    public float jumpForce;
     public enum FacingDirection
     {
         left, right
@@ -27,11 +32,17 @@ public class PlayerController : MonoBehaviour
     {
         //The input from the player needs to be determined and then passed in the to the MovementUpdate which should
         //manage the actual movement of the character.
-        Vector2 playerInput = new Vector2(Input.GetAxis("Horizontal"),0);
+        Vector2 playerInput = new Vector2(Input.GetAxis("Horizontal"), 0);
         MovementUpdate(playerInput);
 
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            if (IsGrounded())
+            {
+                Jump();
+            }
 
-
+        }
     }
 
     private void MovementUpdate(Vector2 playerInput)
@@ -64,7 +75,14 @@ public class PlayerController : MonoBehaviour
     }
     public bool IsGrounded()
     {
-        return true;
+        Vector2 rayOrigin = new Vector2(transform.position.x, transform.position.y);
+
+        RaycastHit2D hit = Physics2D.Raycast(rayOrigin,Vector2.down, rayHeigh,groundLayer);
+        
+        if (hit) { rayColor = Color.green; } else {  rayColor = Color.red; }
+        Debug.DrawRay(rayOrigin,Vector2.down * rayHeigh, rayColor);
+
+        return hit.collider != null;
     }
 
     public FacingDirection GetFacingDirection()
@@ -72,5 +90,8 @@ public class PlayerController : MonoBehaviour
         return currentFacing;
     }
 
-   
+   public void Jump()
+    {
+        rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpForce);
+    }
 }
