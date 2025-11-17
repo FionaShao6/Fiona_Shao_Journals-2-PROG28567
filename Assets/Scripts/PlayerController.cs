@@ -27,7 +27,7 @@ public class PlayerController : MonoBehaviour
     {
         //The input from the player needs to be determined and then passed in the to the MovementUpdate which should
         //manage the actual movement of the character.
-        Vector2 playerInput = new Vector2();
+        Vector2 playerInput = new Vector2(Input.GetAxis("Horizontal"),0);
         MovementUpdate(playerInput);
 
 
@@ -36,7 +36,7 @@ public class PlayerController : MonoBehaviour
 
     private void MovementUpdate(Vector2 playerInput)
     {
-        if (rb != null) {return;}
+        if (rb == null) {return;}
 
         Vector2 targetVelocity = new Vector2(playerInput.x * maxSpeed, rb.linearVelocity.y);
 
@@ -51,8 +51,12 @@ public class PlayerController : MonoBehaviour
         }
 
 
-    }
 
+    }
+    public void FixedUpdate()
+    {
+        
+    }
     public bool IsWalking()
     {
         return false;
@@ -64,6 +68,8 @@ public class PlayerController : MonoBehaviour
 
     public FacingDirection GetFacingDirection()
     {
-        return FacingDirection.left;
+        return currentFacing;
     }
+
+   
 }
