@@ -13,7 +13,16 @@ public class PlayerController : MonoBehaviour
     public float rayHeigh;
     public LayerMask groundLayer;
     public Color rayColor;
-    public float jumpForce;
+
+   // public float jumpForce;
+    public float apexHeight = 1f;
+    public float apexTime=0.5f;
+    public float initialJumpVelocity;
+    public float gravity;
+    public Rigidbody2D controllerRB;
+    private bool jumpTrigger = false;
+    public float terminalFallSpeed = -5f;
+
     public enum FacingDirection
     {
         left, right
@@ -23,7 +32,9 @@ public class PlayerController : MonoBehaviour
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
-
+        //rb.gravityScale = 0;
+        gravity = -2 * apexHeight / (Mathf.Pow(apexTime,2));
+        initialJumpVelocity = 2 * apexHeight / apexTime; 
 
     }
 
@@ -39,10 +50,11 @@ public class PlayerController : MonoBehaviour
         {
             if (IsGrounded())
             {
-                Jump();
+                jumpTrigger = true;
             }
 
         }
+
     }
 
     private void MovementUpdate(Vector2 playerInput)
@@ -66,7 +78,21 @@ public class PlayerController : MonoBehaviour
     }
     public void FixedUpdate()
     {
-        
+        controllerRB.linearVelocityY += gravity * Time.fixedDeltaTime;
+        if (jumpTrigger)
+        {
+            
+
+            controllerRB.linearVelocityY = initialJumpVelocity;
+            jumpTrigger = false;
+
+        }
+        if (controllerRB.linearVelocityY < terminalFallSpeed)
+        {
+            controllerRB.linearVelocityY = terminalFallSpeed;
+
+        }
+
     }
     public bool IsWalking()
     {
@@ -90,8 +116,10 @@ public class PlayerController : MonoBehaviour
         return currentFacing;
     }
 
-   public void Jump()
+   /*public void Jump()
     {
-        rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpForce);
+        rb.linearVelocity = new Vector2(rb.linearVelocity.x, initialJumpVelocity);
     }
+  
+    */
 }
