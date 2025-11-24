@@ -1736,11 +1736,12 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 128
   rayColor: {r: 0, g: 0, b: 0, a: 0}
-  apexHeight: 2
+  apexHeight: 3
   apexTime: 0.5
   initialJumpVelocity: 0
   gravity: 0
   controllerRB: {fileID: 1433354317}
+  terminalFallSpeed: -5
 --- !u!4 &1433354315
 Transform:
   m_ObjectHideFlags: 0

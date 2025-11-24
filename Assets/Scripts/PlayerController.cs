@@ -23,6 +23,10 @@ public class PlayerController : MonoBehaviour
     private bool jumpTrigger = false;
     public float terminalFallSpeed = -5f;
 
+    public float coyoteTime = 0.1f;
+    public float coyoteTimeCounter;
+
+
     public enum FacingDirection
     {
         left, right
@@ -46,15 +50,26 @@ public class PlayerController : MonoBehaviour
         Vector2 playerInput = new Vector2(Input.GetAxis("Horizontal"), 0);
         MovementUpdate(playerInput);
 
+
+        if (IsGrounded())
+        {
+            
+            coyoteTimeCounter = 0f;
+        }
+        else
+        {
+            coyoteTimeCounter += Time.deltaTime;
+        }
+
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            if (IsGrounded())
+            if (IsGrounded() || coyoteTimeCounter < coyoteTime)
             {
                 jumpTrigger = true;
+
             }
 
         }
-
     }
 
     private void MovementUpdate(Vector2 playerInput)
