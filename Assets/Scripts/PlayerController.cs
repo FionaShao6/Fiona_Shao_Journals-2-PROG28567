@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class PlayerController : MonoBehaviour
@@ -26,6 +27,7 @@ public class PlayerController : MonoBehaviour
     public float coyoteTime = 0.1f;
     public float coyoteTimeCounter;
 
+    //Dash
     public float dashMultiplier = 2f; // dash speed multiplier
     public float dashDuration = 0.3f; 
     public float dashCooldown = 1f; // dash cooldown time£¬ 1 second, to prevent infinite dashing
@@ -34,7 +36,10 @@ public class PlayerController : MonoBehaviour
     public LayerMask enemyLayer; // used to set penetration
     public float targetSpeed;
 
-   
+    //Double jump
+    private int maxJumpCount = 2; //Maximum number of jumps
+    private int currentJumpCount;//Current remaining jumps
+    public float secondJumpForce;
 
     public enum FacingDirection
     {
@@ -64,6 +69,7 @@ public class PlayerController : MonoBehaviour
         {
             
             coyoteTimeCounter = 0f;
+            currentJumpCount = maxJumpCount;//If on the ground, you can jump twice
         }
         else
         {
@@ -72,9 +78,10 @@ public class PlayerController : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            if (IsGrounded() || coyoteTimeCounter < coyoteTime)
-            {
+            if (IsGrounded() || coyoteTimeCounter < coyoteTime|| currentJumpCount>1)
+            {//Either on the ground, within Coyote Time, or in the air with remaining jumps
                 jumpTrigger = true;
+                currentJumpCount--;//Each jump consumes 1 attempt
 
             }
 
@@ -132,9 +139,16 @@ public class PlayerController : MonoBehaviour
         controllerRB.linearVelocityY += gravity * Time.fixedDeltaTime;
         if (jumpTrigger)
         {
-            
+            if(IsGrounded() || coyoteTimeCounter < coyoteTime)
+            {
+                controllerRB.linearVelocityY = initialJumpVelocity;
+            }
+            else
+            {
+                controllerRB.linearVelocityY = secondJumpForce;
+            }
 
-            controllerRB.linearVelocityY = initialJumpVelocity;
+            
             jumpTrigger = false;
 
         }
