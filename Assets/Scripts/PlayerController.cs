@@ -41,6 +41,9 @@ public class PlayerController : MonoBehaviour
     private int currentJumpCount;//Current remaining jumps
     public float secondJumpForce;
 
+    
+   
+
     public enum FacingDirection
     {
         left, right
